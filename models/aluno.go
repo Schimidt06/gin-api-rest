@@ -1,11 +1,16 @@
 package models
 
+import "gorm.io/gorm"
+
+// Aluno representa a estrutura de dados de um estudante no sistema
 type Aluno struct {
-	Nome  string `json:"nome"`
-	CPF   string `json:"cpf"`
-	RG    string `json:"rg"`
-	Idade int    `json:"idade"`
-	Sexo  string `json:"sexo"`
+	gorm.Model
+	Nome  string `json:"nome"`  // Nome do aluno
+	CPF   string `json:"cpf"`   // CPF do aluno
+	RG    string `json:"rg"`    // RG do aluno
+	Idade int    `json:"idade"` // Idade do aluno
+	Sexo  string `json:"sexo"`  // Sexo do aluno
 }
 
+// Alunos é um slice (lista) que armazena os alunos em memória (exemplo inicial)
 var Alunos []Aluno
