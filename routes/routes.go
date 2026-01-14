@@ -20,6 +20,10 @@ func HandleRequests() {
 
 	// Define a rota GET com parâmetro dinâmico :nome para saudação
 	r.GET("/:nome", controllers.Saudacao)
+
+	// Define a rota GET para buscar aluno por ID
+	r.GET("/alunos/:id", controllers.BuscaAlunoPorID)
+
 	// Define a rota POST para /alunos que cria um novo aluno
 	r.POST("/alunos", controllers.CriaNovoAluno)
 

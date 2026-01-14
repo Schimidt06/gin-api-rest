@@ -45,3 +45,21 @@ func CriaNovoAluno(c *gin.Context) {
 	// Retorna o aluno criado
 	c.JSON(201, aluno)
 }
+
+// BuscaAlunoPorID localiza um aluno pelo ID
+func BuscaAlunoPorID(c *gin.Context) {
+	var aluno models.Aluno
+	id := c.Params.ByName("id")   // Captura o ID enviado na URL
+	database.DB.First(&aluno, id) // Busca no banco o aluno com este ID
+
+	// Verifica se o aluno foi encontrado (ID diferente de 0)
+	if aluno.ID == 0 {
+		c.JSON(404, gin.H{
+			"Not Found": "Aluno não encontrado",
+		})
+		return
+	}
+
+	// Retorna os dados do aluno encontrado
+	c.JSON(200, aluno)
+}
