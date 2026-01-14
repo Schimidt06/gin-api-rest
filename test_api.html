@@ -304,7 +304,7 @@
                 `;
                 });
             } catch (error) {
-                document.getElementById('lista-alunos').innerHTML = '<p style="color: red; text-align: center;">Erro ao conectar com servidor.</p>';
+                document.getElementById('lista-alunos').innerHTML = `<p style="color: red; text-align: center;">Erro ao conectar com servidor: ${error.message}</p>`;
                 console.error(error);
             }
         }
@@ -353,8 +353,8 @@
                     alert('Erro ao cadastrar aluno.');
                 }
             } catch (error) {
-                alert('Erro na requisição. O servidor caiu?');
-                console.error(error);
+                alert('Erro na requisição: ' + error.message);
+                console.error('Erro detalhado:', error);
             }
         });
 

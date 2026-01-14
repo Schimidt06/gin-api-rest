@@ -10,6 +10,7 @@ import (
 func HandleRequests() {
 	// Cria uma instância padrão do Gin com logger e recovery middleware
 	r := gin.Default()
+	r.SetTrustedProxies(nil) // Desabilita warning de proxies confiáveis
 
 	// Configura o CORS para permitir requisições de qualquer origem
 	r.Use(cors.Default())
@@ -19,8 +20,9 @@ func HandleRequests() {
 
 	// Define a rota GET com parâmetro dinâmico :nome para saudação
 	r.GET("/:nome", controllers.Saudacao)
+	// Define a rota POST para /alunos que cria um novo aluno
 	r.POST("/alunos", controllers.CriaNovoAluno)
 
 	// Inicia o servidor na porta padrão (8080)
-	r.Run()
+	r.Run(":8080")
 }
