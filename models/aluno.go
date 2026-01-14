@@ -11,6 +11,3 @@ type Aluno struct {
 	Idade int    `json:"idade"` // Idade do aluno
 	Sexo  string `json:"sexo"`  // Sexo do aluno
 }
-
-// Alunos é um slice (lista) que armazena os alunos em memória (exemplo inicial)
-var Alunos []Aluno
