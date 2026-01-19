@@ -7,393 +7,681 @@
     <title>Gin API | Dashboard do Aluno</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* DEFINIÇÃO DE VARIÁVEIS CSS (Paleta de cores e efeitos) */
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
+            /* Cor de fundo translúcida para efeito de vidro */
             --glass-border: rgba(255, 255, 255, 0.1);
+            /* Cor da borda sutil e semitransparente */
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            /* Sombra difusa para dar profundidade */
             --primary: #00f2fe;
+            /* Cor primária: Azul Ciano Neon */
             --secondary: #4facfe;
+            /* Cor secundária: Azul Claro */
             --accent: #ff0055;
+            /* Cor de destaque: Rosa/Vermelho Vibrante */
             --text-main: #ffffff;
+            /* Cor principal do texto: Branco */
             --text-secondary: #a0a0a0;
+            /* Cor secundária do texto: Cinza Claro */
         }
 
+        /* Configurações globais do corpo da página (body) */
         body {
             font-family: 'Outfit', sans-serif;
+            /* Define a fonte principal como 'Outfit' */
             background: #0f0c29;
+            /* Define uma cor de fundo sólida de fallback */
             background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            /* Define o gradiente de fundo roxo escuro */
             color: var(--text-main);
+            /* Define a cor padrão do texto usando a variável */
             min-height: 100vh;
+            /* Garante que o corpo ocupe pelo menos 100% da altura da janela */
             margin: 0;
+            /* Remove as margens padrão do navegador */
             display: flex;
+            /* Habilita o modelo Flexbox para layout */
             justify-content: center;
+            /* Centraliza o conteúdo horizontalmente */
             align-items: center;
+            /* Centraliza o conteúdo verticalmente */
             padding: 2rem;
+            /* Adiciona preenchimento interno de 2rem em todos os lados */
             overflow-x: hidden;
+            /* Impede a rolagem horizontal caso algo exceda a largura */
         }
 
-        /* Ambient Blobs */
+        /* ELEMENTOS DE FUNDO (Blobs/Manchas coloridas animadas) */
         .blob {
             position: absolute;
+            /* Posicionamento absoluto em relação ao corpo da página */
             filter: blur(80px);
+            /* Aplica um desfoque intenso para suavizar as bordas */
             z-index: -1;
+            /* Coloca o elemento atrás de todo o conteúdo principal */
             opacity: 0.6;
+            /* Define a opacidade para 60% (semitransparente) */
             animation: move 10s infinite alternate;
+            /* Aplica a animação 'move' por 10s em loop */
         }
 
+        /* Estilos específicos para a primeira mancha */
         .blob-1 {
             background: var(--secondary);
+            /* Usa a cor secundária (azul claro) */
             width: 300px;
+            /* Largura de 300px */
             height: 300px;
+            /* Altura de 300px */
             top: 10%;
+            /* Posiciona a 10% do topo da página */
             left: 10%;
+            /* Posiciona a 10% da esquerda da página */
             border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            /* Bordas irregulares para forma orgânica */
         }
 
+        /* Estilos específicos para a segunda mancha */
         .blob-2 {
             background: var(--accent);
+            /* Usa a cor de destaque (rosa) */
             width: 250px;
+            /* Largura de 250px */
             height: 250px;
+            /* Altura de 250px */
             bottom: 10%;
+            /* Posiciona a 10% da parte inferior */
             right: 10%;
+            /* Posiciona a 10% da direita */
             border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            /* Bordas irregulares diferentes */
             animation-delay: -5s;
+            /* Começa a animação com atraso negativo para dessincronizar */
         }
 
+        /* Definição da animação 'move' (flutuação) */
         @keyframes move {
             from {
                 transform: translate(0, 0) rotate(0deg);
+                /* Começa na posição original */
             }
 
             to {
                 transform: translate(20px, 40px) rotate(20deg);
+                /* Move e rotaciona levemente */
             }
         }
 
+        /* Container principal que organiza o layout */
         .container {
             width: 100%;
+            /* Ocupa 100% da largura disponível */
             max-width: 1100px;
+            /* Limita a largura máxima a 1100px */
             display: grid;
+            /* Habilita Grid Layout */
             grid-template-columns: 1fr 1.5fr;
+            /* Duas colunas: esquerda (1 parte), direita (1.5 partes) */
             gap: 2rem;
+            /* Espaçamento de 2rem entre as colunas */
             z-index: 1;
+            /* Garante que fique acima do fundo (blobs) */
         }
 
+        /* ESTILO DOS PAINÉIS DE VIDRO (Glassmorphism) */
         .glass-panel {
             background: var(--glass-bg);
+            /* Fundo semitransparente */
             backdrop-filter: blur(12px);
+            /* Desfoque do fundo atrás do painel */
             -webkit-backdrop-filter: blur(12px);
+            /* Suporte para Safari */
             border: 1px solid var(--glass-border);
+            /* Borda fina e translúcida */
             border-radius: 24px;
+            /* Arredonda os cantos do painel */
             padding: 2.5rem;
+            /* Espaçamento interno generoso */
             box-shadow: var(--glass-shadow);
+            /* Sombra suave para elevação */
         }
 
+        /* Títulos H1 (Principal) */
         h1 {
             font-size: 2.5rem;
+            /* Tamanho da fonte grande */
             margin-bottom: 0.5rem;
+            /* Margem inferior pequena */
             background: linear-gradient(to right, var(--primary), var(--secondary));
+            /* Gradiente no texto */
             -webkit-background-clip: text;
+            /* Aplica o fundo apenas na área do texto (Webkit) */
+            background-clip: text;
+            /* Aplica o fundo apenas na área do texto (Padrão) */
             -webkit-text-fill-color: transparent;
+            /* Torna a cor do texto transparente para mostrar o fundo */
             font-weight: 700;
+            /* Peso da fonte em negrito */
         }
 
+        /* Títulos H2 (Secundários) */
         h2 {
             font-size: 1.5rem;
+            /* Tamanho médio */
             margin-bottom: 1.5rem;
+            /* Margem inferior para separar do conteúdo */
             color: var(--text-main);
+            /* Cor branca padrão */
             display: flex;
+            /* Flexbox para alinhar itens internos */
             justify-content: space-between;
+            /* Espalha o título e o botão de atualizar */
             align-items: center;
+            /* Alinha verticalmente */
         }
 
+        /* Subtítulos */
         .subtitle {
             color: var(--text-secondary);
+            /* Cor cinza claro */
             margin-bottom: 2rem;
+            /* Espaço abaixo do subtítulo */
             font-weight: 300;
+            /* Fonte mais fina (light) */
         }
 
-        /* Form Styles */
+        /* ESTILOS DO FORMULÁRIO */
         .form-group {
             margin-bottom: 1.5rem;
+            /* Espaço entre cada grupo de input */
             position: relative;
+            /* Posicionamento relativo para elementos filhos */
         }
 
+        /* Rótulos dos campos */
         label {
             display: block;
+            /* Ocupa a linha inteira */
             margin-bottom: 0.5rem;
+            /* Espaço entre rótulo e input */
             font-size: 0.9rem;
+            /* Tamanho de fonte levemente menor */
             color: var(--text-secondary);
+            /* Cor cinza */
             margin-left: 0.5rem;
+            /* Pequeno recuo à esquerda */
         }
 
+        /* Campos de entrada (Input e Select) globais */
         input,
         select {
             width: 100%;
+            /* Largura total do container */
             padding: 14px 18px;
+            /* Preenchimento interno confortável */
             background: rgba(0, 0, 0, 0.2);
+            /* Fundo preto semitransparente */
             border: 1px solid var(--glass-border);
+            /* Borda sutil */
             border-radius: 12px;
+            /* Cantos arredondados */
             color: white;
+            /* Texto branco */
             font-family: inherit;
+            /* Herda a fonte do corpo */
             font-size: 1rem;
+            /* Tamanho da fonte padrão */
             transition: all 0.3s ease;
+            /* Transição suave para efeitos de hover/focus */
             box-sizing: border-box;
+            /* Inclui padding e border no cálculo da largura */
         }
 
+        /* Estado de foco nos inputs e selects */
         input:focus,
         select:focus {
             outline: none;
+            /* Remove a borda padrão do navegador */
             border-color: var(--primary);
+            /* Muda a cor da borda para ciano */
             background: rgba(0, 0, 0, 0.4);
+            /* Escurece o fundo */
             box-shadow: 0 0 15px rgba(79, 172, 254, 0.2);
+            /* Adiciona brilho externo (glow) */
         }
 
+        /* Botão Principal (Cadastrar/Buscar) */
         button.btn-main {
             width: 100%;
+            /* Largura total */
             padding: 16px;
+            /* Altura confortável */
             background: linear-gradient(135deg, var(--secondary), var(--primary));
+            /* Gradiente de fundo */
             border: none;
+            /* Remove borda */
             border-radius: 12px;
+            /* Cantos arredondados */
             color: #000;
+            /* Texto preto para contraste */
             font-weight: 700;
+            /* Texto em negrito */
             font-size: 1.1rem;
+            /* Tamanho da fonte */
             cursor: pointer;
+            /* Muda cursor para mãozinha */
             transition: transform 0.2s, box-shadow 0.2s;
+            /* Animações suaves */
             margin-top: 1rem;
+            /* Espaço acima do botão */
         }
 
+        /* Estado Hover do Botão Principal */
         button.btn-main:hover {
             transform: translateY(-3px);
+            /* Move o botão levemente para cima */
             box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+            /* Sombra com cor neon */
         }
 
+        /* Botão de Atualizar (ícone pequeno) */
         button.btn-refresh {
             background: rgba(255, 255, 255, 0.1);
+            /* Fundo sutil */
             border: none;
+            /* Sem borda */
             color: white;
+            /* Ícone branco */
             padding: 8px 16px;
+            /* Tamanho menor */
             border-radius: 20px;
+            /* Bordas bem arredondadas (pílula) */
             cursor: pointer;
+            /* Cursor de clique */
             font-size: 0.9rem;
+            /* Fonte menor */
             transition: background 0.2s;
+            /* Transição de fundo */
         }
 
+        /* Hover do Botão Atualizar */
         button.btn-refresh:hover {
             background: rgba(255, 255, 255, 0.2);
+            /* Clareia o fundo ao passar o mouse */
         }
 
-        /* List Styles */
+        /* Container da Lista de Alunos */
         .list-container {
             max-height: 600px;
+            /* Altura máxima fixa */
             overflow-y: auto;
+            /* Adiciona barra de rolagem se conteúdo exceder */
             padding-right: 10px;
+            /* Espaço para a barra de rolagem não colar no conteúdo */
         }
 
+        /* Estilização da Barra de Rolagem (Webkit/Chrome) */
         .list-container::-webkit-scrollbar {
             width: 6px;
+            /* Largura fina */
         }
 
         .list-container::-webkit-scrollbar-thumb {
             background: var(--glass-border);
+            /* Cor da barra igual à borda de vidro */
             border-radius: 3px;
+            /* Arredondada */
         }
 
+        /* Card Individual de Aluno */
         .aluno-card {
             background: rgba(255, 255, 255, 0.03);
+            /* Fundo muito sutil */
             border: 1px solid var(--glass-border);
+            /* Borda fina */
             border-radius: 16px;
+            /* Arredondado */
             padding: 1.2rem;
+            /* Espaçamento interno */
             margin-bottom: 1rem;
+            /* Espaço entre cards */
             display: flex;
+            /* Flexbox para alinhar avatar e texto */
             align-items: center;
+            /* Alinhamento vertical centro */
             transition: all 0.3s;
+            /* Transição para hover */
             animation: simpleCheck 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            /* Animação de entrada suave */
         }
 
+        /* Hover do Card de Aluno */
         .aluno-card:hover {
             background: rgba(255, 255, 255, 0.08);
+            /* Clareia o fundo */
             transform: translateX(5px);
+            /* Move levemente para a direita */
             border-color: rgba(255, 255, 255, 0.3);
+            /* Borda mais visível */
         }
 
+        /* Avatar (Círculo com iniciais) */
         .avatar {
             width: 48px;
+            /* Largura fixa */
             height: 48px;
+            /* Altura fixa */
             border-radius: 12px;
+            /* Quadrado arredondado (squircle) */
             background: linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%);
+            /* Gradiente rosa */
             display: flex;
+            /* Flex para centralizar texto */
             align-items: center;
+            /* Centro vertical */
             justify-content: center;
+            /* Centro horizontal */
             font-weight: bold;
+            /* Texto negrito */
             color: #333;
+            /* Cor escura para texto nas iniciais */
             margin-right: 1rem;
+            /* Espaço à direita */
             font-size: 1.2rem;
+            /* Tamanho da letra */
         }
 
+        /* Informações do Aluno no Card */
         .info h3 {
             margin: 0;
+            /* Zera margem */
             font-size: 1.1rem;
+            /* Tamanho do nome */
             color: white;
+            /* Cor branca */
         }
 
         .info p {
             margin: 4px 0 0 0;
+            /* Pequena margem superior */
             font-size: 0.85rem;
+            /* Texto menor para detalhes */
             color: var(--text-secondary);
+            /* Cor cinza */
         }
 
+        /* Badge com o ID do Aluno */
         .badge {
             margin-left: auto;
+            /* Empurra para o final direito do card */
             background: rgba(79, 172, 254, 0.2);
+            /* Fundo azul translúcido */
             color: var(--primary);
+            /* Texto azul neon */
             padding: 4px 10px;
+            /* Espaçamento interno */
             border-radius: 20px;
+            /* Formato de pílula */
             font-size: 0.8rem;
+            /* Fonte pequena */
             font-weight: 600;
+            /* Semi-negrito */
         }
 
+        /* Responsividade para Mobile */
         @media (max-width: 850px) {
             .container {
                 grid-template-columns: 1fr;
+                /* Muda para uma única coluna */
             }
 
             .blob {
                 opacity: 0.4;
+                /* Reduz a opacidade das manchas para não distrair */
             }
         }
 
+        /* Keyframes da Animação de Entrada dos Cards */
         @keyframes simpleCheck {
             from {
                 opacity: 0;
+                /* Começa invisível */
                 transform: translateY(10px);
+                /* Começa levemente abaixo */
             }
 
             to {
                 opacity: 1;
+                /* Termina visível */
                 transform: translateY(0);
+                /* Termina na posição original */
             }
         }
     </style>
 </head>
 
 <body>
+    <!-- Elementos decorativos de fundo (Manchas/Blobs) -->
+    <div class="blob blob-1"></div> <!-- Mancha colorida 1 (Azul) -->
+    <div class="blob blob-2"></div> <!-- Mancha colorida 2 (Rosa) -->
 
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-
+    <!-- Container principal que alinha os painéis na tela -->
     <div class="container">
-        <!-- FORM PANEL -->
+
+        <!-- PAINEL DE FORMULÁRIO (Coluna da Esquerda) -->
         <div class="glass-panel">
-            <h1>Gin API</h1>
-            <p class="subtitle">Gerencie seus alunos com estilo.</p>
+            <!-- Cabeçalho do Painel -->
+            <h1>Gin API</h1> <!-- Título principal com gradiente -->
+            <p class="subtitle">Gerencie seus alunos com estilo.</p> <!-- Subtítulo descritivo -->
 
+            <!-- Formulário de Cadastro de Alunos -->
             <form id="form-aluno">
-                <h2>Novo Cadastro</h2>
+                <h2>Novo Cadastro</h2> <!-- Título da seção de formulário -->
 
+                <!-- Campo: Nome Completo -->
                 <div class="form-group">
-                    <label for="nome">Nome Completo</label>
-                    <input type="text" id="nome" placeholder="John Doe" required>
+                    <label for="nome">Nome Completo</label> <!-- Rótulo acessível -->
+                    <input type="text" id="nome" placeholder="John Doe" required> <!-- Input de texto obrigatório -->
                 </div>
 
+                <!-- Campo: CPF -->
                 <div class="form-group">
-                    <label for="cpf">CPF</label>
+                    <label for="cpf">CPF</label> <!-- Rótulo -->
                     <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                    <!-- Input com limite de caracteres para máscara -->
                 </div>
 
+                <!-- Campo: RG -->
                 <div class="form-group">
-                    <label for="rg">RG</label>
+                    <label for="rg">RG</label> <!-- Rótulo -->
                     <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" required>
+                    <!-- Input com limite de caracteres -->
                 </div>
 
+                <!-- Grid interno para campos menores (Idade e Sexo) lado a lado -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+                    <!-- Campo: Idade -->
                     <div class="form-group">
-                        <label for="idade">Idade</label>
-                        <select id="idade" required>
-                            <option value="" disabled selected>Selecione</option>
-                            <!-- JS fill -->
+                        <label for="idade">Idade</label> <!-- Rótulo -->
+                        <select id="idade" required> <!-- Dropdown de seleção obrigatório -->
+                            <option value="" disabled selected>Selecione</option> <!-- Opção padrão desabilitada -->
+                            <!-- As opções de 1 a 100 serão preenchidas via JavaScript -->
                         </select>
                     </div>
+
+                    <!-- Campo: Sexo -->
                     <div class="form-group">
-                        <label for="sexo">Sexo</label>
-                        <select id="sexo" required>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Feminino">Feminino</option>
+                        <label for="sexo">Sexo</label> <!-- Rótulo -->
+                        <select id="sexo" required> <!-- Dropdown de seleção obrigatório -->
+                            <option value="Masculino">Masculino</option> <!-- Opção Masculino -->
+                            <option value="Feminino">Feminino</option> <!-- Opção Feminino -->
                         </select>
                     </div>
                 </div>
 
+                <!-- Botão de Envio do Formulário -->
                 <button type="submit" class="btn-main">Cadastrar Aluno ✨</button>
             </form>
         </div>
 
-        <!-- LIST PANEL -->
+        <!-- PAINEL DE LISTAGEM (Coluna da Direita) -->
         <div class="glass-panel">
+            <!-- Cabeçalho da Lista com Botão de Atualizar -->
             <h2>
                 Lista de Alunos
+                <!-- Botão para recarregar a lista manualmente -->
                 <button onclick="listarAlunos()" class="btn-refresh">🔄 Atualizar</button>
             </h2>
+
+            <!-- BARRA DE PESQUISA -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <!-- Container flex para alinhar input e botão -->
+                <!-- Input de busca por ID numérico -->
+                <input type="number" id="search-id" placeholder="Buscar por ID..." style="margin-bottom: 0;">
+
+                <!-- Botão de ação de busca -->
+                <button onclick="buscarAluno()" class="btn-main"
+                    style="width: auto; margin-top: 0; white-space: nowrap;">🔍 Buscar</button>
+            </div>
+
+            <!-- Container onde os cards de alunos serão injetados -->
             <div id="lista-alunos" class="list-container">
-                <!-- Items inserted here -->
+                <!-- Conteúdo inicial de carregamento ou lista vazia -->
+                <!-- Os itens reais serão inseridos aqui pela função listarAlunos() no JavaScript -->
                 <p style="text-align: center; margin-top: 2rem; color: rgba(255,255,255,0.3);">Carregando dados...</p>
             </div>
         </div>
     </div>
 
     <script>
+        // Define a URL base da API (backend em Go)
         const API_URL = 'http://localhost:8080/alunos';
 
-        // MASKS
-        const cpfInput = document.getElementById('cpf');
-        const rgInput = document.getElementById('rg');
+        // FUNÇÃO DE BUSCA: Procura um aluno específico pelo ID
+        async function buscarAluno() {
+            // Obtém o valor digitado no campo de input de busca
+            const id = document.getElementById('search-id').value;
 
-        cpfInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 11) value = value.slice(0, 11);
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            e.target.value = value;
-        });
+            // Validação: Se o campo estiver vazio, exibe alerta e para a execução
+            if (!id) return alert("Digite um ID para buscar!");
 
-        rgInput.addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 9) value = value.slice(0, 9);
-            value = value.replace(/(\d{2})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1})$/, '$1-$2');
-            e.target.value = value;
-        });
+            try {
+                // Faz a requisição HTTP GET para a API passando o ID na URL
+                const response = await fetch(`${API_URL}/${id}`);
 
-        // POPULATE AGE
-        const selectIdade = document.getElementById('idade');
-        for (let i = 1; i <= 100; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.innerText = i;
-            selectIdade.appendChild(opt);
+                // Verifica se o status da resposta é 404 (Não Encontrado)
+                if (response.status === 404) {
+                    // Exibe a mensagem específica solicitada caso o aluno não exista
+                    alert("aluno nao cadastrado, por favor verifique o cadastro");
+                    return; // Encerra a função
+                }
+
+                // Se a resposta não for OK (200-299) e não for 404, lança um erro genérico
+                if (!response.ok) throw new Error("Erro na busca");
+
+                // Converte a resposta da API (JSON) para um objeto JavaScript
+                const aluno = await response.json();
+
+                // Seleciona o container da lista para exibir o resultado
+                const listaDiv = document.getElementById('lista-alunos');
+
+                // Extrai as duas primeiras letras do nome para usar como avatar (iniciais)
+                const initials = aluno.nome.substring(0, 2).toUpperCase();
+
+                // Sobrescreve o conteúdo da lista com o card do aluno encontrado
+                // Nota: Usa um estilo inline especial para destacar o resultado da busca
+                listaDiv.innerHTML = `
+                    <div class="aluno-card" style="border-color: var(--primary); background: rgba(0, 242, 254, 0.1);">
+                        <div class="avatar">${initials}</div>
+                        <div class="info">
+                            <h3>${aluno.nome}</h3>
+                            <p>${aluno.cpf} • ${aluno.idade} anos</p>
+                        </div>
+                        <span class="badge">#${aluno.ID}</span>
+                    </div>
+                    <!-- Botão para limpar a busca e voltar a exibir todos os alunos -->
+                    <button onclick="listarAlunos()" style="background:none; border:none; color: var(--text-secondary); cursor: pointer; text-decoration: underline; width: 100%; margin-top: 10px;">Voltar para lista completa</button>
+                `;
+
+            } catch (error) {
+                // Captura erros de rede ou processamento e exibe alerta ao usuário
+                alert("Erro ao buscar aluno.");
+                console.error(error); // Loga o erro no console para debug
+            }
         }
 
-        // FETCH ALUNOS
+        // SELEÇÃO DE ELEMENTOS DE INPUT PARA MÁSCARAS
+        const cpfInput = document.getElementById('cpf'); // Input do CPF
+        const rgInput = document.getElementById('rg');   // Input do RG
+
+        // ADICIONA EVENT LISTENER PARA INPUT DO CPF (Máscara enquanto digita)
+        cpfInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+            if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
+
+            // Aplica a formatação 000.000.000-00 usando Regex
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca o primeiro ponto
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca o segundo ponto
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca o traço no final
+
+            // Atualiza o valor do campo com a máscara aplicada
+            e.target.value = value;
+        });
+
+        // ADICIONA EVENT LISTENER PARA INPUT DO RG (Máscara enquanto digita)
+        rgInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for dígito
+            if (value.length > 9) value = value.slice(0, 9); // Limita a 9 dígitos (exemplo padrão SP)
+
+            // Aplica a formatação 00.000.000-0 usando Regex
+            value = value.replace(/(\d{2})(\d)/, '$1.$2'); // Coloca o primeiro ponto
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca o segundo ponto
+            value = value.replace(/(\d{3})(\d{1})$/, '$1-$2'); // Coloca o traço no final
+
+            // Atualiza o valor do campo com a máscara aplicada
+            e.target.value = value;
+        });
+
+        // POPULA O SELECT DE IDADE (Gera opções de 1 a 100 anos automaticamente)
+        const selectIdade = document.getElementById('idade'); // Seleciona o elemento select
+        for (let i = 1; i <= 100; i++) {
+            const opt = document.createElement('option'); // Cria um novo elemento <option>
+            opt.value = i; // Define o valor (ex: 1)
+            opt.innerText = i; // Define o texto visível (ex: 1)
+            selectIdade.appendChild(opt); // Adiciona a opção ao select
+        }
+
+        // FUNÇÃO LISTAR ALUNOS: Busca e renderiza todos os alunos cadastrados
         async function listarAlunos() {
-            const listaDiv = document.getElementById('lista-alunos');
+            const listaDiv = document.getElementById('lista-alunos'); // Container da lista
             try {
+                // Faz a requisição GET para a raiz /alunos (lista todos)
                 const response = await fetch(API_URL);
+
+                // Verifica se a conexão falhou
                 if (!response.ok) throw new Error('Falha ao conectar');
+
+                // Converte a resposta para lista de objetos
                 const alunos = await response.json();
 
-                listaDiv.innerHTML = '';
+                listaDiv.innerHTML = ''; // Limpa o conteúdo atual da lista antes de adicionar novos
 
+                // Verifica se a lista retornada está vazia
                 if (alunos.length === 0) {
+                    // Exibe mensagem informativa se não houver registros
                     listaDiv.innerHTML = '<p style="text-align:center; margin-top: 2rem; color: rgba(255,255,255,0.3);">Nenhum aluno cadastrado ainda.</p>';
                     return;
                 }
 
+                // Itera sobre cada aluno retornado para criar seu card
                 alunos.forEach(aluno => {
+                    // Gera as iniciais para o avatar
                     const initials = aluno.nome.substring(0, 2).toUpperCase();
-                    // Generate a random gradient for avatar based on ID or name roughly
-                    // Simple distinct visual
 
+                    // Adiciona o HTML do card ao container da lista (append)
                     listaDiv.innerHTML += `
                         <div class="aluno-card">
                             <div class="avatar">${initials}</div>
@@ -407,56 +695,67 @@
                 });
 
             } catch (error) {
+                // Tratamento de erro de conexão (ex: servidor desligado)
                 listaDiv.innerHTML = `<p style="text-align: center; color: #ff6b6b; margin-top:2rem;">Erro de conexão com API.<br>Verifique se o servidor Go está rodando.</p>`;
             }
         }
 
-        // ADD ALUNO
+        // EVENTO DE CADASTRO: Intercepta o envio do formulário para salvar via AJAX
         document.getElementById('form-aluno').addEventListener('submit', async (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Impede o recarregamento padrão da página (submit tradicional)
 
+            // Limpa formatação (pontos e traços) do CPF e RG para enviar apenas números limpos ao backend
             const rawCPF = cpfInput.value.replace(/\D/g, '');
             const rawRG = rgInput.value.replace(/\D/g, '');
 
+            // Validação simples de tamanho do CPF no frontend
             if (rawCPF.length !== 11) return alert("CPF Inválido (requer 11 números)");
 
+            // Monta o objeto com os dados do novo aluno para enviar
             const aluno = {
-                nome: document.getElementById('nome').value,
-                cpf: rawCPF,
-                rg: rawRG,
-                idade: parseInt(document.getElementById('idade').value),
-                sexo: document.getElementById('sexo').value
+                nome: document.getElementById('nome').value, // Pega valor do nome
+                cpf: rawCPF, // Usa o CPF limpo
+                rg: rawRG,   // Usa o RG limpo
+                idade: parseInt(document.getElementById('idade').value), // Converte idade para Inteiro
+                sexo: document.getElementById('sexo').value // Pega valor do sexo
             };
 
             try {
+                // Envia requisição POST para a API criar o aluno
                 const res = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(aluno)
+                    headers: { 'Content-Type': 'application/json' }, // Define cabeçalho JSON
+                    body: JSON.stringify(aluno) // Converte objeto JS para string JSON
                 });
 
+                // Verifica se o cadastro foi bem-sucedido (Status 2xx)
                 if (res.ok) {
-                    // Success feedback
-                    const btn = document.querySelector('.btn-main');
-                    const originalText = btn.innerText;
-                    btn.innerText = "Sucesso! 🎉";
-                    btn.style.background = "linear-gradient(135deg, #11998e, #38ef7d)";
-                    document.getElementById('form-aluno').reset();
-                    listarAlunos();
+                    // Feedback visual de sucesso: altera temporariamente o texto e cor do botão
+                    const btn = document.querySelector('.btn-main'); // Seleciona o botão
+                    const originalText = btn.innerText; // Guarda o texto original
 
+                    btn.innerText = "Sucesso! 🎉"; // Muda o texto
+                    btn.style.background = "linear-gradient(135deg, #11998e, #38ef7d)"; // Muda cor para verde
+
+                    document.getElementById('form-aluno').reset(); // Limpa o formulário
+                    listarAlunos(); // Atualiza a lista lateral para mostrar o novo aluno
+
+                    // Restaura o botão ao estado original após 2 segundos
                     setTimeout(() => {
                         btn.innerText = originalText;
-                        btn.style.background = "";
+                        btn.style.background = ""; // Remove estilo inline para voltar ao CSS
                     }, 2000);
                 } else {
+                    // Alerta genérico se a API retornar erro (ex: 400 ou 500)
                     alert("Erro ao salvar. Verifique o console.");
                 }
             } catch (err) {
+                // Captura erro de rede
                 alert("Erro de conexão.");
             }
         });
 
-        // Init
+        // Inicializa a lista de alunos assim que a página carrega
         listarAlunos();
 
     </script>

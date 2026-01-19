@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/Schimidt06/gin-api-rest/database"
 	"github.com/Schimidt06/gin-api-rest/models"
 	"github.com/gin-gonic/gin"
@@ -62,4 +64,11 @@ func BuscaAlunoPorID(c *gin.Context) {
 
 	// Retorna os dados do aluno encontrado
 	c.JSON(200, aluno)
+}
+
+func DeletaAluno(c *gin.Context) {
+	var aluno models.Aluno
+	id := c.Params.ByName("id")
+	database.DB.Delete(&aluno, id)
+	c.JSON(http.StatusOK, gin.H{"message": "Aluno deletado com sucesso"})
 }

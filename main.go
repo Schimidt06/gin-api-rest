@@ -10,6 +10,6 @@ func main() {
 	// Conecta ao banco de dados PostgreSQL
 	database.ConectaComBancoDeDados()
 
-	// Inicializa e houve as requisições HTTP
+	// Inicializa e ouve as requisições HTTP
 	routes.HandleRequests()
 }
