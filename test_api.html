@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gin API | Dashboard do Aluno</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* DEFINIÇÃO DE VARIÁVEIS CSS (Paleta de cores e efeitos) */
         :root {
@@ -312,6 +315,58 @@
             /* Clareia o fundo ao passar o mouse */
         }
 
+        /* Botão de Editar (ícone lápis) */
+        button.btn-edit {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--primary);
+            padding: 8px;
+            /* Padding quadrado */
+            border-radius: 50%;
+            /* Círculo perfeito */
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            /* Centraliza o ícone */
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+            /* Espaço para o texto */
+        }
+
+        button.btn-edit:hover {
+            background: var(--primary);
+            /* Fundo preenche com a cor primária */
+            color: #000;
+            /* Ícone fica preto */
+            transform: scale(1.1);
+            /* Aumenta levemente */
+        }
+
+        /* Botão Cancelar Edição (Vermelho) */
+        button.btn-cancel {
+            background: rgba(255, 87, 87, 0.2);
+            border: 1px solid rgba(255, 87, 87, 0.5);
+            color: #ff5757;
+            padding: 10px;
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: none;
+            /* Oculto por padrão */
+            transition: all 0.2s;
+        }
+
+        button.btn-cancel:hover {
+            background: rgba(255, 87, 87, 0.3);
+            transform: translateY(-2px);
+        }
+
         /* Container da Lista de Alunos */
         .list-container {
             max-height: 600px;
@@ -470,61 +525,101 @@
     <!-- Container principal que alinha os painéis na tela -->
     <div class="container">
 
-        <!-- PAINEL DE FORMULÁRIO (Coluna da Esquerda) -->
+        <!-- PAINEL DE FORMULÁRIO / DASHBOARD (Coluna da Esquerda) -->
         <div class="glass-panel">
             <!-- Cabeçalho do Painel -->
             <h1>Gin API</h1> <!-- Título principal com gradiente -->
-            <p class="subtitle">Gerencie seus alunos com estilo.</p> <!-- Subtítulo descritivo -->
 
-            <!-- Formulário de Cadastro de Alunos -->
-            <form id="form-aluno">
-                <h2>Novo Cadastro</h2> <!-- Título da seção de formulário -->
+            <!-- Botões de Alternância de Visualização -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="toggleView('form')" id="btn-view-form" class="btn-main"
+                    style="margin-top: 0; background: var(--glass-bg); border: 1px solid var(--glass-border);">📝
+                    Formulário</button>
+                <button onclick="toggleView('dashboard')" id="btn-view-dashboard" class="btn-main"
+                    style="margin-top: 0; background: transparent; border: 1px solid var(--glass-border); opacity: 0.7;">📊
+                    Dashboard</button>
+            </div>
 
-                <!-- Campo: Nome Completo -->
-                <div class="form-group">
-                    <label for="nome">Nome Completo</label> <!-- Rótulo acessível -->
-                    <input type="text" id="nome" placeholder="John Doe" required> <!-- Input de texto obrigatório -->
-                </div>
+            <!-- CONTAINER DO FORMULÁRIO -->
+            <div id="form-container">
+                <p class="subtitle">Gerencie seus alunos com estilo.</p> <!-- Subtítulo descritivo -->
 
-                <!-- Campo: CPF -->
-                <div class="form-group">
-                    <label for="cpf">CPF</label> <!-- Rótulo -->
-                    <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
-                    <!-- Input com limite de caracteres para máscara -->
-                </div>
+                <!-- Formulário de Cadastro de Alunos -->
+                <form id="form-aluno">
+                    <h2>Novo Cadastro</h2> <!-- Título da seção de formulário -->
 
-                <!-- Campo: RG -->
-                <div class="form-group">
-                    <label for="rg">RG</label> <!-- Rótulo -->
-                    <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" required>
-                    <!-- Input com limite de caracteres -->
-                </div>
-
-                <!-- Grid interno para campos menores (Idade e Sexo) lado a lado -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-
-                    <!-- Campo: Idade -->
+                    <!-- Campo: Nome Completo -->
                     <div class="form-group">
-                        <label for="idade">Idade</label> <!-- Rótulo -->
-                        <select id="idade" required> <!-- Dropdown de seleção obrigatório -->
-                            <option value="" disabled selected>Selecione</option> <!-- Opção padrão desabilitada -->
-                            <!-- As opções de 1 a 100 serão preenchidas via JavaScript -->
-                        </select>
+                        <label for="nome">Nome Completo</label> <!-- Rótulo acessível -->
+                        <input type="text" id="nome" placeholder="John Doe" required>
+                        <!-- Input de texto obrigatório -->
                     </div>
 
-                    <!-- Campo: Sexo -->
+                    <!-- Campo: CPF -->
                     <div class="form-group">
-                        <label for="sexo">Sexo</label> <!-- Rótulo -->
-                        <select id="sexo" required> <!-- Dropdown de seleção obrigatório -->
-                            <option value="Masculino">Masculino</option> <!-- Opção Masculino -->
-                            <option value="Feminino">Feminino</option> <!-- Opção Feminino -->
-                        </select>
+                        <label for="cpf">CPF</label> <!-- Rótulo -->
+                        <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" required>
+                        <!-- Input com limite de caracteres para máscara -->
+                    </div>
+
+                    <!-- Campo: RG -->
+                    <div class="form-group">
+                        <label for="rg">RG</label> <!-- Rótulo -->
+                        <input type="text" id="rg" placeholder="00.000.000-0" maxlength="12" required>
+                        <!-- Input com limite de caracteres -->
+                    </div>
+
+                    <!-- Grid interno para campos menores (Idade e Sexo) lado a lado -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+
+                        <!-- Campo: Idade -->
+                        <div class="form-group">
+                            <label for="idade">Idade</label> <!-- Rótulo -->
+                            <select id="idade" required> <!-- Dropdown de seleção obrigatório -->
+                                <option value="" disabled selected>Selecione</option> <!-- Opção padrão desabilitada -->
+                                <!-- As opções de 1 a 100 serão preenchidas via JavaScript -->
+                            </select>
+                        </div>
+
+                        <!-- Campo: Sexo -->
+                        <div class="form-group">
+                            <label for="sexo">Sexo</label> <!-- Rótulo -->
+                            <select id="sexo" required> <!-- Dropdown de seleção obrigatório -->
+                                <option value="Masculino">Masculino</option> <!-- Opção Masculino -->
+                                <option value="Feminino">Feminino</option> <!-- Opção Feminino -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Envio do Formulário -->
+                    <button type="submit" class="btn-main" id="btn-submit">Cadastrar Aluno ✨</button>
+
+                    <!-- Botão cancelar edição (aparece só quando está editando) -->
+                    <button type="button" onclick="cancelarEdicao()" class="btn-cancel" id="btn-cancel">Cancelar Edição
+                        ❌</button>
+                </form>
+            </div>
+
+            <!-- CONTAINER DO DASHBOARD (Gráficos) - Inicialmente Oculto -->
+            <div id="dashboard-container" style="display: none;">
+                <p class="subtitle">Estatísticas em tempo real.</p>
+
+                <!-- Gráfico 1: Distribuição por Gênero -->
+                <div style="margin-bottom: 30px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px;">
+                    <h3 style="margin-top: 0; font-size: 1rem; color: var(--secondary);">Gênero</h3>
+                    <div style="height: 200px; display: flex; justify-content: center;">
+                        <canvas id="chart-gender"></canvas>
                     </div>
                 </div>
 
-                <!-- Botão de Envio do Formulário -->
-                <button type="submit" class="btn-main">Cadastrar Aluno ✨</button>
-            </form>
+                <!-- Gráfico 2: Distribuição por Idade -->
+                <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px;">
+                    <h3 style="margin-top: 0; font-size: 1rem; color: var(--secondary);">Faixa Etária</h3>
+                    <div style="height: 200px;">
+                        <canvas id="chart-age"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- PAINEL DE LISTAGEM (Coluna da Direita) -->
@@ -536,15 +631,42 @@
                 <button onclick="listarAlunos()" class="btn-refresh">🔄 Atualizar</button>
             </h2>
 
-            <!-- BARRA DE PESQUISA -->
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                <!-- Container flex para alinhar input e botão -->
+            <!-- SEÇÃO DE FILTROS -->
+            <div
+                style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
+                <h3 style="margin: 0 0 10px 0; font-size: 1rem; color: var(--secondary);">Filtrar Alunos</h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                    <!-- Filtro por Nome -->
+                    <input type="text" id="filter-nome" placeholder="Nome..." style="font-size: 0.9rem; padding: 10px;">
+
+                    <!-- Filtro por CPF -->
+                    <input type="text" id="filter-cpf" placeholder="CPF (apenas números)"
+                        style="font-size: 0.9rem; padding: 10px;">
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <!-- Botão de Filtrar -->
+                    <button onclick="listarAlunos()" class="btn-main"
+                        style="margin-top: 0; padding: 10px; font-size: 1rem;">🔎 Filtrar</button>
+
+                    <!-- Botão de Limpar Filtros -->
+                    <button onclick="limparFiltros()"
+                        style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; border-radius: 12px; cursor: pointer; padding: 0 15px;">Limpar</button>
+                </div>
+            </div>
+
+            <!-- BUSCA POR ID (ANTIGA, MANTIDA COMO OPÇÃO SECUNDÁRIA) -->
+            <div
+                style="display: flex; gap: 10px; margin-bottom: 20px; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <span style="font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap;">Ou busque por
+                    ID:</span>
                 <!-- Input de busca por ID numérico -->
-                <input type="number" id="search-id" placeholder="Buscar por ID..." style="margin-bottom: 0;">
+                <input type="number" id="search-id" placeholder="ID..." style="margin-bottom: 0; padding: 8px;">
 
                 <!-- Botão de ação de busca -->
                 <button onclick="buscarAluno()" class="btn-main"
-                    style="width: auto; margin-top: 0; white-space: nowrap;">🔍 Buscar</button>
+                    style="width: auto; margin-top: 0; white-space: nowrap; padding: 8px 15px; font-size: 0.9rem;">Ir</button>
             </div>
 
             <!-- Container onde os cards de alunos serão injetados -->
@@ -553,12 +675,138 @@
                 <!-- Os itens reais serão inseridos aqui pela função listarAlunos() no JavaScript -->
                 <p style="text-align: center; margin-top: 2rem; color: rgba(255,255,255,0.3);">Carregando dados...</p>
             </div>
+
+            <!-- PAGINAÇÃO -->
+            <div id="pagination"
+                style="display: none; justify-content: center; gap: 15px; margin-top: 20px; align-items: center; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <button onclick="mudarPagina(-1)" id="btn-prev" class="btn-main"
+                    style="width: auto; margin: 0; padding: 8px 15px; font-size: 0.9rem;">◀ Anterior</button>
+                <span id="page-indicator" style="color: var(--text-secondary); font-size: 0.9rem;">Página 1</span>
+                <button onclick="mudarPagina(1)" id="btn-next" class="btn-main"
+                    style="width: auto; margin: 0; padding: 8px 15px; font-size: 0.9rem;">Próximo ▶</button>
+            </div>
+
+            <!-- TEMPLATE DA CARTEIRINHA (Oculto, usado para geração de imagem) -->
+            <div id="id-card-template" style="
+                position: absolute; 
+                top: -9999px; 
+                width: 400px; 
+                height: 250px; 
+                background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); 
+                border-radius: 16px; 
+                display: flex; 
+                flex-direction: column; 
+                padding: 20px; 
+                box-sizing: border-box; 
+                border: 2px solid rgba(255,255,255,0.2); 
+                font-family: 'Outfit', sans-serif;
+                color: white;
+                overflow: hidden;">
+
+                <!-- Background decorativo -->
+                <div
+                    style="position: absolute; top: 0; right: 0; width: 150px; height: 150px; background: rgba(0, 242, 254, 0.2); border-radius: 50%; filter: blur(40px);">
+                </div>
+                <div
+                    style="position: absolute; bottom: 0; left: 0; width: 100px; height: 100px; background: rgba(255, 0, 85, 0.2); border-radius: 50%; filter: blur(30px);">
+                </div>
+
+                <!-- Header -->
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; z-index: 2;">
+                    <div
+                        style="font-weight: 700; font-size: 1.2rem; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                        GIN ACADEMY</div>
+                    <div
+                        style="font-size: 0.7rem; opacity: 0.7; border: 1px solid rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 10px;">
+                        ESTUDANTE</div>
+                </div>
+
+                <!-- Conteúdo Principal -->
+                <div style="display: flex; gap: 20px; z-index: 2;">
+                    <!-- Foto Fake (Iniciais) -->
+                    <div id="card-avatar" style="
+                        width: 80px; 
+                        height: 80px; 
+                        background: linear-gradient(135deg, #FF9A9E, #FECFEF); 
+                        border-radius: 12px; 
+                        display: flex; 
+                        justify-content: center; 
+                        align-items: center; 
+                        font-size: 2rem; 
+                        font-weight: bold; 
+                        color: #333;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                        --
+                    </div>
+
+                    <!-- Dados -->
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <div style="font-size: 0.7rem; color: #aaa; text-transform: uppercase;">Nome do Aluno</div>
+                        <div id="card-nome" style="font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;">Nome
+                            Completo</div>
+
+                        <div style="font-size: 0.7rem; color: #aaa; text-transform: uppercase;">CPF</div>
+                        <div id="card-cpf" style="font-size: 0.9rem; letter-spacing: 1px;">000.000.000-00</div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div
+                    style="margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; z-index: 2;">
+                    <div>
+                        <div style="font-size: 0.6rem; color: #777;">Válido até</div>
+                        <div style="font-size: 0.8rem;">12/2026</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.6rem; color: #777;">ID Mátricula</div>
+                        <div id="card-id" style="font-size: 1.2rem; font-family: monospace; color: #00f2fe;">#000</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         // Define a URL base da API (backend em Go)
         const API_URL = 'http://localhost:8080/alunos';
+
+        // Variável de estado para controlar se estamos editando um aluno (chaves o ID) ou criando novo (null)
+        let editingID = null;
+
+        // Variáveis globais dos gráficos
+        let genderChart = null;
+        let ageChart = null;
+
+        // FUNÇÃO TOGGLE VIEW: Alterna entre Formulário e Dashboard
+        function toggleView(view) {
+            const formContainer = document.getElementById('form-container');
+            const dashboardContainer = document.getElementById('dashboard-container');
+            const btnForm = document.getElementById('btn-view-form');
+            const btnDash = document.getElementById('btn-view-dashboard');
+
+            if (view === 'form') {
+                formContainer.style.display = 'block';
+                dashboardContainer.style.display = 'none';
+
+                // Estilo ativo/inativo
+                btnForm.style.opacity = '1';
+                btnForm.style.background = 'var(--glass-bg)';
+                btnDash.style.opacity = '0.7';
+                btnDash.style.background = 'transparent';
+            } else {
+                formContainer.style.display = 'none';
+                dashboardContainer.style.display = 'block';
+
+                btnForm.style.opacity = '0.7';
+                btnForm.style.background = 'transparent';
+                btnDash.style.opacity = '1';
+                btnDash.style.background = 'var(--glass-bg)';
+
+                // Força atualização dos gráficos ao entrar na view
+                listarAlunos();
+            }
+        }
 
         // FUNÇÃO DE BUSCA: Procura um aluno específico pelo ID
         async function buscarAluno() {
@@ -654,32 +902,140 @@
             selectIdade.appendChild(opt); // Adiciona a opção ao select
         }
 
-        // FUNÇÃO LISTAR ALUNOS: Busca e renderiza todos os alunos cadastrados
-        async function listarAlunos() {
-            const listaDiv = document.getElementById('lista-alunos'); // Container da lista
+        // PREPARAR EDIÇÃO: Preenche o formulário com os dados do aluno selecionado
+        function prepararEdicao(aluno) {
+            // Define o ID global que estamos editando
+            editingID = aluno.ID;
+
+            // Preenche os campos do formulário
+            document.getElementById('nome').value = aluno.nome;
+            // Precisamos formatar CPF e RG novamente pois no banco podem estar limpos ou sujos dependendo da implementação,
+            // mas aqui assumimos formatar para visualização
+            document.getElementById('cpf').value = aluno.cpf;
+            document.getElementById('rg').value = aluno.rg;
+            document.getElementById('idade').value = aluno.idade;
+            document.getElementById('sexo').value = aluno.sexo; // Assume que valor 'Masculino'/'Feminino' bate com as options
+
+            // Altera visualmente o formulário para modo edição
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = "Salvar Alterações 💾";
+            btnSubmit.style.background = "linear-gradient(135deg, #ff9966, #ff5e62)"; // Laranja para indicar edição
+
+            document.getElementById('btn-cancel').style.display = 'block'; // Mostra botão cancelar
+
+            // Rola suavemente até o formulário
+            document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // CANCELAR EDIÇÃO: Limpa o estado e volta ao modo de cadastro
+        function cancelarEdicao() {
+            editingID = null; // Limpa o ID
+            document.getElementById('form-aluno').reset(); // Limpa inputs
+
+            // Restaura botão de submit
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = "Cadastrar Aluno ✨";
+            btnSubmit.style.background = ""; // Volta ao CSS original
+
+            document.getElementById('btn-cancel').style.display = 'none'; // Esconde botão cancelar
+        }
+
+        // LIMPAR FILTROS: Reseta os campos de busca e recarrega a lista completa
+        function limparFiltros() {
+            document.getElementById('filter-nome').value = '';
+            document.getElementById('filter-cpf').value = '';
+            listarAlunos();
+        }
+
+        // FUNÇÃO DELETAR ALUNO: Remove um aluno do banco de dados
+        async function deletarAluno(id, nome) {
+            // Confirmação simples com o usuário
+            if (!confirm(`Tem certeza que deseja deletar o aluno(a) ${nome}?`)) return;
+
             try {
-                // Faz a requisição GET para a raiz /alunos (lista todos)
-                const response = await fetch(API_URL);
+                // Envia requisição DELETE para a API
+                const res = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (res.ok) {
+                    alert("Aluno deletado com sucesso!");
+                    listarAlunos(); // Atualiza a lista
+
+                    // Se estivermos editando este mesmo aluno, limpa o formulário
+                    if (editingID === id) cancelarEdicao();
+                } else {
+                    const error = await res.json();
+                    alert("Erro ao deletar: " + (error.error || "Erro desconhecido"));
+                }
+            } catch (err) {
+                alert("Erro de conexão ao tentar deletar.");
+                console.error(err);
+            }
+        }
+
+        // Variáveis de Paginação
+        let currentPage = 1;
+        const itemsPerPage = 5; // Limite por página
+
+        // FUNÇÃO LISTAR ALUNOS: Busca e renderiza todos os alunos cadastrados com paginação
+        async function listarAlunos(page = 1) {
+            const listaDiv = document.getElementById('lista-alunos'); // Container da lista
+            const paginationDiv = document.getElementById('pagination');
+
+            // Atualiza estado da página atual
+            currentPage = page;
+
+            // Captura valores dos filtros
+            const nomeStr = document.getElementById('filter-nome')?.value || '';
+            const cpfStr = document.getElementById('filter-cpf')?.value || '';
+
+            const params = new URLSearchParams();
+            if (nomeStr) params.append('nome', nomeStr);
+            if (cpfStr) params.append('cpf', cpfStr);
+
+            // Adiciona parâmetros de paginação
+            params.append('page', currentPage);
+            params.append('limit', itemsPerPage);
+
+            const url = params.toString() ? `${API_URL}?${params.toString()}` : API_URL;
+
+            try {
+                // Faz a requisição GET
+                const response = await fetch(url);
 
                 // Verifica se a conexão falhou
                 if (!response.ok) throw new Error('Falha ao conectar');
 
-                // Converte a resposta para lista de objetos
-                const alunos = await response.json();
+                // Converte a resposta para JSON
+                // AGORA A RESPOSTA É UM OBJETO: { data: [...], total: X, page: Y, totalPages: Z }
+                const result = await response.json();
+
+                // Fallback para garantir que 'alunos' seja um array (caso a API antiga ainda estivesse rodando)
+                const alunos = Array.isArray(result) ? result : (result.data || []);
+                const totalPages = result.totalPages || 1;
 
                 listaDiv.innerHTML = ''; // Limpa o conteúdo atual da lista antes de adicionar novos
 
                 // Verifica se a lista retornada está vazia
                 if (alunos.length === 0) {
-                    // Exibe mensagem informativa se não houver registros
-                    listaDiv.innerHTML = '<p style="text-align:center; margin-top: 2rem; color: rgba(255,255,255,0.3);">Nenhum aluno cadastrado ainda.</p>';
+                    listaDiv.innerHTML = '<p style="text-align:center; margin-top: 2rem; color: rgba(255,255,255,0.3);">Nenhum aluno encontrado.</p>';
+                    // Mesmo vazia, atualiza gráficos (zerados)
+                    updateCharts([]);
+                    atualizarPaginacao(0, 0);
                     return;
                 }
+
+                // Atualiza os gráficos com os novos dados
+                updateCharts(alunos);
 
                 // Itera sobre cada aluno retornado para criar seu card
                 alunos.forEach(aluno => {
                     // Gera as iniciais para o avatar
                     const initials = aluno.nome.substring(0, 2).toUpperCase();
+
+                    // Prepara o objeto aluno como string para passar na função onclick
+                    const alunoString = JSON.stringify(aluno).replace(/"/g, '&quot;');
 
                     // Adiciona o HTML do card ao container da lista (append)
                     listaDiv.innerHTML += `
@@ -689,14 +1045,60 @@
                                 <h3>${aluno.nome}</h3>
                                 <p>${aluno.cpf} • ${aluno.idade} anos</p>
                             </div>
+                            <!-- Botão de Editar -->
+                            <button onclick="prepararEdicao(${alunoString})" class="btn-edit" title="Editar este aluno">✏️</button>
+                            
+                            <!-- Botão de Deletar -->
+                            <button onclick="deletarAluno(${aluno.ID}, '${aluno.nome}')" class="btn-edit" style="color: #ff5757; margin-right: 0;" title="Deletar este aluno">🗑️</button>
+                            
+                            <!-- Botão de Carteirinha (NOVO) -->
+                            <button onclick='gerarCarteirinha(${alunoString})' class="btn-edit" style="color: #fff; margin-left:10px;" title="Baixar Carteirinha">🪪</button>
+
                             <span class="badge">#${aluno.ID}</span>
                         </div>
                     `;
                 });
 
+                // Atualiza os controles de paginação
+                atualizarPaginacao(totalPages);
+
             } catch (error) {
                 // Tratamento de erro de conexão (ex: servidor desligado)
                 listaDiv.innerHTML = `<p style="text-align: center; color: #ff6b6b; margin-top:2rem;">Erro de conexão com API.<br>Verifique se o servidor Go está rodando.</p>`;
+                console.error(error);
+            }
+        }
+
+        // FUNÇÃO ATUALIZAR PAGINAÇÃO: Controla estado dos botões
+        function atualizarPaginacao(totalPages) {
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const indicator = document.getElementById('page-indicator');
+            const paginationDiv = document.getElementById('pagination');
+
+            if (totalPages <= 1) {
+                paginationDiv.style.display = 'none'; // Esconde se só tiver 1 página
+                return;
+            } else {
+                paginationDiv.style.display = 'flex';
+            }
+
+            indicator.innerText = `Página ${currentPage} de ${totalPages}`;
+
+            // Desabilita "Anterior" se estiver na primeira
+            btnPrev.disabled = currentPage === 1;
+            btnPrev.style.opacity = currentPage === 1 ? '0.5' : '1';
+
+            // Desabilita "Próximo" se estiver na última
+            btnNext.disabled = currentPage === totalPages;
+            btnNext.style.opacity = currentPage === totalPages ? '0.5' : '1';
+        }
+
+        // FUNÇÃO MUDAR PÁGINA: Chamada pelos botões
+        function mudarPagina(delta) {
+            const novaPagina = currentPage + delta;
+            if (novaPagina > 0) {
+                listarAlunos(novaPagina);
             }
         }
 
@@ -720,10 +1122,15 @@
                 sexo: document.getElementById('sexo').value // Pega valor do sexo
             };
 
+            // Define se vamos criar (POST) ou editar (PATCH)
+            const method = editingID ? 'PATCH' : 'POST';
+            // Se estiver editando, adiciona o ID na URL
+            const url = editingID ? `${API_URL}/${editingID}` : API_URL;
+
             try {
-                // Envia requisição POST para a API criar o aluno
-                const res = await fetch(API_URL, {
-                    method: 'POST',
+                // Envia requisição para a API
+                const res = await fetch(url, {
+                    method: method,
                     headers: { 'Content-Type': 'application/json' }, // Define cabeçalho JSON
                     body: JSON.stringify(aluno) // Converte objeto JS para string JSON
                 });
@@ -737,12 +1144,17 @@
                     btn.innerText = "Sucesso! 🎉"; // Muda o texto
                     btn.style.background = "linear-gradient(135deg, #11998e, #38ef7d)"; // Muda cor para verde
 
-                    document.getElementById('form-aluno').reset(); // Limpa o formulário
+                    // Se estiver editando, usa a função de cancelar para limpar estado corretamente
+                    if (editingID) {
+                        cancelarEdicao();
+                    } else {
+                        document.getElementById('form-aluno').reset();
+                    }
                     listarAlunos(); // Atualiza a lista lateral para mostrar o novo aluno
 
-                    // Restaura o botão ao estado original após 2 segundos
+                    // Restaura o botão ao estado padrão após 2 segundos
                     setTimeout(() => {
-                        btn.innerText = originalText;
+                        btn.innerText = "Cadastrar Aluno ✨";
                         btn.style.background = ""; // Remove estilo inline para voltar ao CSS
                     }, 2000);
                 } else {
@@ -757,6 +1169,132 @@
 
         // Inicializa a lista de alunos assim que a página carrega
         listarAlunos();
+
+        // FUNÇÃO UPDATE CHARTS: Calcula estatísticas e renderiza gráficos
+        function updateCharts(alunos) {
+            // Se os graficos já existem, destroi para recriar (evita sobreposição)
+            if (genderChart) genderChart.destroy();
+            if (ageChart) ageChart.destroy();
+
+            // 1. Processamento de Dados Gênero
+            const totalMasculino = alunos.filter(a => a.sexo === 'Masculino').length;
+            const totalFeminino = alunos.filter(a => a.sexo === 'Feminino').length;
+
+            // 2. Processamento de Dados Idade (Agrupamento)
+            const faixas = { '0-18': 0, '19-30': 0, '31-50': 0, '51+': 0 };
+            alunos.forEach(a => {
+                if (a.idade <= 18) faixas['0-18']++;
+                else if (a.idade <= 30) faixas['19-30']++;
+                else if (a.idade <= 50) faixas['31-50']++;
+                else faixas['51+']++;
+            });
+
+            // Configuração comum (Cores e Fontes)
+            Chart.defaults.color = '#fff';
+            Chart.defaults.font.family = 'Outfit';
+
+            // GRÁFICO DE GÊNERO (Doughnut)
+            const ctxGender = document.getElementById('chart-gender').getContext('2d');
+            genderChart = new Chart(ctxGender, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Masculino', 'Feminino'],
+                    datasets: [{
+                        data: [totalMasculino, totalFeminino],
+                        backgroundColor: ['#4facfe', '#ff0055'], // Cores do tema (Azul e Rosa)
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // GRÁFICO DE IDADE (Bar)
+            const ctxAge = document.getElementById('chart-age').getContext('2d');
+            ageChart = new Chart(ctxAge, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(faixas),
+                    datasets: [{
+                        label: 'Alunos',
+                        data: Object.values(faixas),
+                        backgroundColor: 'rgba(0, 242, 254, 0.5)', // Cor primária translúcida
+                        borderColor: '#00f2fe',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        // FUNÇÃO GERAR CARTEIRINHA: Cria um PDF/PNG do card do aluno e baixa
+        async function gerarCarteirinha(alunoString) {
+            // Parseia o objeto se vier como string (do onclick)
+            const aluno = typeof alunoString === 'string' ? JSON.parse(alunoString) : alunoString;
+
+            // Preenche o Template Oculto
+            const template = document.getElementById('id-card-template');
+            document.getElementById('card-nome').innerText = aluno.nome;
+            document.getElementById('card-cpf').innerText = aluno.cpf;
+            document.getElementById('card-id').innerText = '#' + aluno.ID;
+
+            // Avatar Fake
+            const initials = aluno.nome.substring(0, 2).toUpperCase();
+            document.getElementById('card-avatar').innerText = initials;
+
+            // Move temporariamente o template para a tela (visível) mas fora da visão do usuário
+            // Isso é necessário porque o html2canvas falha se o elemento tiver "display: none"
+            template.style.top = "0";
+            template.style.left = "-9999px";
+            template.style.display = "flex"; // Garante que é renderizado
+
+            try {
+                // Gera o Canvas a partir do HTML
+                const canvas = await html2canvas(template, {
+                    scale: 2, // Melhora a resolução (Retina)
+                    backgroundColor: null, // Transparente
+                    logging: false
+                });
+
+                // Cria o PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'px',
+                    format: [420, 270] // Tamanho um pouco maior que o card (400x250)
+                });
+
+                // Adiciona a imagem ao PDF
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 10, 10, 400, 250);
+
+                // Salva o arquivo
+                pdf.save(`Carteirinha-${aluno.nome}.pdf`);
+
+            } catch (err) {
+                console.error("Erro ao gerar carteirinha:", err);
+                alert("Erro ao gerar carteirinha.");
+            } finally {
+                // Esconde o template novamente
+                template.style.top = "-9999px";
+            }
+        }
 
     </script>
 </body>

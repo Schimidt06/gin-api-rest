@@ -24,6 +24,10 @@ func HandleRequests() {
 	// Define a rota GET para buscar aluno por ID
 	r.GET("/alunos/:id", controllers.BuscaAlunoPorID)
 
+	// Define a rota PATCH para editar aluno por ID
+	r.PATCH("/alunos/:id", controllers.EditaAluno)
+	r.DELETE("/alunos/:id", controllers.DeletaAluno)
+
 	// Define a rota POST para /alunos que cria um novo aluno
 	r.POST("/alunos", controllers.CriaNovoAluno)
 
